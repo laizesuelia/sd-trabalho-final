@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tokenring-headless
+spec:
+  clusterIP: None
+  selector:
+    app: tokenring
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tokenring
+spec:
+  serviceName: tokenring-headless
+  replicas: 3
+  selector:
+    matchLabels:
+      app: tokenring
+  template:
+    metadata:
+      labels:
+        app: tokenring
+    spec:
+      containers:
+        - name: tokenring
+          image: tokenring:v100
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env:
+            - name: N_PROCS
+              value: "3"
+            - name: PROC_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: PORT
+              value: "8000"
+            - name: PEERS
+              value: "http://tokenring-0.tokenring-headless:8000,http://tokenring-1.tokenring-headless:8000,http://tokenring-2.tokenring-headless:8000"
+
