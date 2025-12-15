@@ -24,8 +24,8 @@ spec:
     spec:
       containers:
         - name: bully
-          image: bully:latest   # IMAGEM LOCAL
-          imagePullPolicy: Never   # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ESSENCIAL
+          image: bully:latest  
+          imagePullPolicy: Never   
           env:
             - name: PROC_ID
               valueFrom:
@@ -37,3 +37,4 @@ spec:
               value: "http://bully-0.bully-headless:8000,http://bully-1.bully-headless:8000,http://bully-2.bully-headless:8000"
           ports:
             - containerPort: 8000
+
